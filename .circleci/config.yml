@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Create deployment infra
           command: |
-            aws cloudformation create-stack --stack-name circleci-infra --template-body infra.yml --parameters infra-params.json
+            aws cloudformation create-stack --stack-name circleci-infra --template-body infra.yml --parameters file://infra-params.json
 
 workflows:
   default:
