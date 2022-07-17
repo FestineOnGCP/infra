@@ -1,0 +1,57 @@
+Parameter:
+  envVar:
+    Description: Environment variable
+    Type: String
+
+  httpPort:
+    Description: HTTP Port connection
+    Type: String
+
+  allCidr:
+    Description: Cidr block for all IP connections
+    Type: String
+
+  sshPort:
+    Description: Port for SSH connections
+    Type: String
+
+  outPorts:
+    Description: All the ports for outbound traffic
+    Type: CommaDelimitedList
+ 
+Resources:
+  webServerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security for Application Load Balancer
+      GroupName: !Sub ${envVar}-WebServerSG
+      VpcId: 
+        Fn::ImportValue: !Ref route53VPC
+      SecurityGroupIngress:
+        - Description: Allow HTTP connection
+          IpProtocol: tcp
+          FromPort: !Ref httpPort
+          ToPort: !Ref httpPorts
+          CidrIp: !Ref allCidr
+        - Description: Allow SSH connection
+          IpProtocol: tcp
+          FromPort: !Ref sshPort
+          ToPort: !Ref sshPort
+          CidrIp: !Ref allCidr
+      SecurityGroupEgress:
+        - Description: Allow all egress connection
+          IpProtocol: -1
+          FromPort: !Select [0, !Ref outPorts]
+          ToPort: !Select [1, !Ref outPorts]
+          CidrIp: !Ref allCidr
+
+  testVm:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: us-east-1c
+      ImageId: ami-0cff7528ff583bf9a
+      InstanceType: t2.micro
+      KeyName: festineKeys2.pem
+      SecurityGroupIds:
+      - !Ref webServerSG
+      SubnetId: !festinePubSub
