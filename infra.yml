@@ -1,4 +1,4 @@
-Parameter:
+Parameters:
   envVar:
     Description: Environment variable
     Type: String
