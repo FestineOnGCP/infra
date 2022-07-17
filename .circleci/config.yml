@@ -1,0 +1,16 @@
+version: 2.1
+
+executors:
+  my-exec-env:
+    docker:
+      - image: amazon/aws-cli
+
+jobs:
+  create-infra:
+    executor: my-exec-env
+    steps:
+      - checkout
+      - run:
+          name: Create deployment infra
+          command: |
+            aws cloudformation create-stack --stack-name circleci-infra --template-body infra.yml --parameters infra-params.json
