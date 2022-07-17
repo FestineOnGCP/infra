@@ -1,57 +1,82 @@
-Parameters:
-  envVar:
-    Description: Environment variable
-    Type: String
+# Parameters:
+#   envVar:
+#     Description: Environment variable
+#     Type: String
 
-  httpPort:
-    Description: HTTP Port connection
-    Type: String
+#   httpPort:
+#     Description: HTTP Port connection
+#     Type: String
 
-  allCidr:
-    Description: Cidr block for all IP connections
-    Type: String
+#   allCidr:
+#     Description: Cidr block for all IP connections
+#     Type: String
 
-  sshPort:
-    Description: Port for SSH connections
-    Type: String
+#   sshPort:
+#     Description: Port for SSH connections
+#     Type: String
 
-  outPorts:
-    Description: All the ports for outbound traffic
-    Type: CommaDelimitedList
+#   outPorts:
+#     Description: All the ports for outbound traffic
+#     Type: CommaDelimitedList
  
-Resources:
-  webServerSG:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Security for Application Load Balancer
-      GroupName: !Sub ${envVar}-WebServerSG
-      VpcId: 
-        Fn::ImportValue: !Ref route53VPC
-      SecurityGroupIngress:
-        - Description: Allow HTTP connection
-          IpProtocol: tcp
-          FromPort: !Ref httpPort
-          ToPort: !Ref httpPorts
-          CidrIp: !Ref allCidr
-        - Description: Allow SSH connection
-          IpProtocol: tcp
-          FromPort: !Ref sshPort
-          ToPort: !Ref sshPort
-          CidrIp: !Ref allCidr
-      SecurityGroupEgress:
-        - Description: Allow all egress connection
-          IpProtocol: -1
-          FromPort: !Select [0, !Ref outPorts]
-          ToPort: !Select [1, !Ref outPorts]
-          CidrIp: !Ref allCidr
+# Resources:
+#   webServerSG:
+#     Type: AWS::EC2::SecurityGroup
+#     Properties:
+#       GroupDescription: Security for Application Load Balancer
+#       GroupName: !Sub ${envVar}-WebServerSG
+#       VpcId: 
+#         Fn::ImportValue: !Ref route53VPC
+#       SecurityGroupIngress:
+#         - Description: Allow HTTP connection
+#           IpProtocol: tcp
+#           FromPort: !Ref httpPort
+#           ToPort: !Ref httpPorts
+#           CidrIp: !Ref allCidr
+#         - Description: Allow SSH connection
+#           IpProtocol: tcp
+#           FromPort: !Ref sshPort
+#           ToPort: !Ref sshPort
+#           CidrIp: !Ref allCidr
+#       SecurityGroupEgress:
+#         - Description: Allow all egress connection
+#           IpProtocol: -1
+#           FromPort: !Select [0, !Ref outPorts]
+#           ToPort: !Select [1, !Ref outPorts]
+#           CidrIp: !Ref allCidr
 
-  testVm:
-    Type: AWS::EC2::Instance
+#   testVm:
+#     Type: AWS::EC2::Instance
+#     Properties:
+#       AvailabilityZone: us-east-1c
+#       ImageId: ami-0cff7528ff583bf9a
+#       InstanceType: t2.micro
+#       KeyName: festineKeys2.pem
+#       SecurityGroupIds:
+#       - !Ref webServerSG
+#       SubnetId: !festinePubSub
+
+# Exercise - Rollback
+AWSTemplateFormatVersion: 2010-09-09
+Description: ND9991 C3 L4 
+Resources:
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
     Properties:
-      AvailabilityZone: us-east-1c
-      ImageId: ami-0cff7528ff583bf9a
-      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref InstanceSecurityGroup
+      # Change this, as applicable to you      
       KeyName: festineKeys2.pem
-      SecurityGroupIds:
-      - !Ref webServerSG
-      SubnetId: !festinePubSub
+      # Change this, as applicable to you
+      # You may need to find out what instance types are available in your region - use https://cloud-images.ubuntu.com/locator/ec2/
+      ImageId: 'ami-0cff7528ff583bf9a' 
+      InstanceType: t3.micro
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0 
