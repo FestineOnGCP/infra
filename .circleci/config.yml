@@ -15,7 +15,7 @@ jobs:
           command: |
             aws cloudformation create-stack --stack-name circleci-infra --template-body infra.yml --parameters infra-params.json
 
-workflow:
+workflows:
   default:
     jobs:
       - create-infra
