@@ -25,7 +25,7 @@ Resources:
     Properties:
       GroupDescription: Security for Application Load Balancer
       GroupName: !Sub ${envVar}-WebServerSG
-      VpcId: vpc-07695e125399efc5d
+      VpcId: vpc-0cd5deaee0cfa2f11
       SecurityGroupIngress:
         - Description: Allow HTTP connection
           IpProtocol: tcp
