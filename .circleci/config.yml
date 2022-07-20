@@ -16,6 +16,13 @@ jobs:
             aws cloudformation create-stack --stack-name circleci-infra \
             --template-body file://infra.yml --parameters file://infra-params.json  \
             --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+      - run: 
+          name: Update deployment Stack
+          command: |
+            aws cloudformation update-stack --stack-name circleci-infra \
+            --template-body file://infra.yml --parameters file://infra-params.json  \
+            --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+          when: on_fail
 
 workflows:
   default:

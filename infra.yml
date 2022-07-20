@@ -53,3 +53,7 @@ Resources:
       SecurityGroupIds:
       - !Ref webServerSG
       SubnetId: subnet-001f57d2fdeec3f28
+      Tags:
+        - Key: Name
+          Value: TestVm
+
