@@ -48,7 +48,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       AvailabilityZone: eu-north-1a
-      ImageId: ami-0440e5026412ff23f
+      ImageId: ami-08d4ac5b634553e16
       InstanceType: t3.micro
       KeyName: festineKeys2
       SecurityGroupIds:
