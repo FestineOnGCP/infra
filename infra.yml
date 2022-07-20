@@ -52,4 +52,4 @@ Resources:
       KeyName: festineKeys2
       SecurityGroupIds:
       - !Ref webServerSG
-      SubnetId: subnet-00ace097bb71065b9
+      SubnetId: subnet-001f57d2fdeec3f28
